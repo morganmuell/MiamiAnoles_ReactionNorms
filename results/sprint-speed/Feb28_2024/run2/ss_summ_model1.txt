@@ -1,0 +1,64 @@
+
+ Iterations = 25001:274951
+ Thinning interval  = 50
+ Sample size  = 5000 
+
+ DIC: 420.6253 
+
+ G-structure:  ~us(1 + nTreatment):Cage
+
+                             post.mean   l-95% CI u-95% CI eff.samp
+(Intercept):(Intercept).Cage 0.0031365  5.366e-12 0.010544     5000
+nTreatment:(Intercept).Cage  0.0003306 -3.927e-03 0.005058     5000
+(Intercept):nTreatment.Cage  0.0003306 -3.927e-03 0.005058     5000
+nTreatment:nTreatment.Cage   0.0070063  3.309e-10 0.025043     5000
+
+ R-structure:  ~units
+
+      post.mean l-95% CI u-95% CI eff.samp
+units    0.1528   0.1316   0.1777     5000
+
+ Location effects: logSS ~ 1 + Species + SVL + Stops + Fails + SprintTemp + AgeSprint + nTreatment + Species * nTreatment 
+
+                               post.mean  l-95% CI  u-95% CI eff.samp  pMCMC
+(Intercept)                     2.502806  0.458361  4.405328     5000 0.0140
+Specieschlorocyanus            -0.031131 -0.185542  0.137906     5000 0.6996
+Speciescristatellus            -0.532624 -0.699042 -0.378334     5000 <2e-04
+Speciescybotes                 -0.241835 -0.380021 -0.083088     5000 0.0008
+Speciesdistichus               -0.364023 -0.527768 -0.202193     5000 <2e-04
+Speciesequestris                1.042045  0.407756  1.699441     5000 0.0024
+Speciessagrei                  -0.104834 -0.281592  0.078399     5243 0.2456
+SVL                            -0.040014 -0.071403 -0.007720     5000 0.0160
+Stops                           0.151401  0.129898  0.172597     5000 <2e-04
+Fails                           0.038436  0.005056  0.070169     5000 0.0176
+SprintTemp                     -0.084097 -0.156565 -0.008951     5000 0.0260
+AgeSprint                      -0.029234 -0.048725 -0.008001     4264 0.0044
+nTreatment                      0.178176 -0.025880  0.382209     4518 0.0960
+Specieschlorocyanus:nTreatment -0.303816 -0.604649 -0.002354     5000 0.0480
+Speciescristatellus:nTreatment  0.001424 -0.300509  0.296858     4541 0.9924
+Speciescybotes:nTreatment      -0.024268 -0.334688  0.247416     5000 0.8640
+Speciesdistichus:nTreatment    -0.184594 -0.495107  0.111060     5000 0.2324
+Speciesequestris:nTreatment    -0.053615 -0.352084  0.253531     5000 0.7408
+Speciessagrei:nTreatment       -0.303168 -0.579066 -0.013244     5000 0.0396
+                                  
+(Intercept)                    *  
+Specieschlorocyanus               
+Speciescristatellus            ***
+Speciescybotes                 ***
+Speciesdistichus               ***
+Speciesequestris               ** 
+Speciessagrei                     
+SVL                            *  
+Stops                          ***
+Fails                          *  
+SprintTemp                     *  
+AgeSprint                      ** 
+nTreatment                     .  
+Specieschlorocyanus:nTreatment *  
+Speciescristatellus:nTreatment    
+Speciescybotes:nTreatment         
+Speciesdistichus:nTreatment       
+Speciesequestris:nTreatment       
+Speciessagrei:nTreatment       *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

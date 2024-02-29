@@ -1,0 +1,56 @@
+
+ Iterations = 25001:274951
+ Thinning interval  = 50
+ Sample size  = 5000 
+
+ DIC: -2472.794 
+
+ G-structure:  ~us(1 + nTreatment):Cage
+
+                              post.mean   l-95% CI  u-95% CI eff.samp
+(Intercept):(Intercept).Cage  2.569e-04  9.628e-05 4.306e-04     5000
+nTreatment:(Intercept).Cage  -5.864e-06 -1.005e-04 8.885e-05     4476
+(Intercept):nTreatment.Cage  -5.864e-06 -1.005e-04 8.885e-05     4476
+nTreatment:nTreatment.Cage    6.018e-05  1.115e-11 2.232e-04     5000
+
+ R-structure:  ~units
+
+      post.mean l-95% CI u-95% CI eff.samp
+units  0.001977 0.001762 0.002189     5000
+
+ Location effects: logInc ~ 1 + EggMass + nTreatment + Species + Species * nTreatment 
+
+                                post.mean   l-95% CI   u-95% CI eff.samp  pMCMC
+(Intercept)                     3.6727252  3.6575967  3.6882696     5000 <2e-04
+EggMass                         0.0120164 -0.0197746  0.0419125     5000 0.4496
+nTreatment                     -0.3957835 -0.4116922 -0.3803896     5030 <2e-04
+Specieschlorocyanus             0.0248322  0.0047881  0.0440207     5000 0.0136
+Speciescristatellus            -0.0746093 -0.0932575 -0.0555173     5624 <2e-04
+Speciescybotes                 -0.0367924 -0.0536040 -0.0180211     5000 <2e-04
+Speciesdistichus               -0.0356013 -0.0542449 -0.0159496     4779 0.0008
+Speciesequestris                0.3855993  0.3088096  0.4523834     5000 <2e-04
+Speciessagrei                  -0.1960869 -0.2148464 -0.1791977     5000 <2e-04
+nTreatment:Specieschlorocyanus  0.0277830  0.0002148  0.0528564     5000 0.0412
+nTreatment:Speciescristatellus  0.0152985 -0.0078296  0.0403191     5600 0.2176
+nTreatment:Speciescybotes       0.0350599  0.0121704  0.0565428     5222 0.0020
+nTreatment:Speciesdistichus     0.0289677  0.0014871  0.0547592     4627 0.0340
+nTreatment:Speciesequestris     0.0913888  0.0646997  0.1199026     5000 <2e-04
+nTreatment:Speciessagrei       -0.0380611 -0.0586200 -0.0159444     5000 0.0008
+                                  
+(Intercept)                    ***
+EggMass                           
+nTreatment                     ***
+Specieschlorocyanus            *  
+Speciescristatellus            ***
+Speciescybotes                 ***
+Speciesdistichus               ***
+Speciesequestris               ***
+Speciessagrei                  ***
+nTreatment:Specieschlorocyanus *  
+nTreatment:Speciescristatellus    
+nTreatment:Speciescybotes      ** 
+nTreatment:Speciesdistichus    *  
+nTreatment:Speciesequestris    ***
+nTreatment:Speciessagrei       ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
