@@ -1,0 +1,6 @@
+"","x"
+"(Intercept):(Intercept).Cage",0.000252671404667135
+"nTreatment:(Intercept).Cage",4.50063664760676e-07
+"(Intercept):nTreatment.Cage",4.50063664760676e-07
+"nTreatment:nTreatment.Cage",6.04326461422681e-07
+"units",0.00197144792410291
