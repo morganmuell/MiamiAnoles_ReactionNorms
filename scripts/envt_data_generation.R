@@ -3,6 +3,13 @@
 #####-- Environmental Association Models #####
 setwd("~/Documents/PhD/Miami_Project/data-analysis/climate_data/")
 library(raster)
+library(ggcorrplot)
+library(corrplot)
+library(FactoMineR)
+library(factoextra)
+library(plotrix)
+library(ggplot2)
+library(RColorBrewer)
 
 ##-- Data downloaded from WORLDCLIM and PALEOCLIM websites (details in manuscript)
 preclim2 <- raster("LH_v1_2_5m/bio_2.tif")
