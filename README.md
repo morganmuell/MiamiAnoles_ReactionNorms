@@ -6,14 +6,14 @@ Incoming.
 
 ## Guide to Repository:
 
-'datasets' folder contains phenotype data in form of R objects, phylogeny used in analysis, and occurrence records and climate layers used to draw boundaries for climate data used in analysis.
+`'datasets'` folder contains phenotype data in form of R objects, phylogeny used in analysis, and occurrence records and climate layers used to draw boundaries for climate data used in analysis.
 
-'scripts' folder contains the following:
+`'scripts'` folder contains the following:
   - Environmental data script, where climate layers are trimmed down to species-specific ranges and values are pulled to create climate fixed effects for reaction norm modeling.
   - Modeling scripts, optimized for the Easley HPC cluster at Auburn University. Within each script, Bayesian mixed models extract reaction norms and test for the influence of common ancestry versus climate on reaction norm evolution among species. 
   - Two plotting scripts ("plots_ch1.R" and "plot_utils.R"). The main plotting script contains code used to generate Figs 2 and 3, and the heat map from Fig 1. plot_utils.R contains support functions for plots in main script.
 
-'results' folder is divided by phenotype and contains output summary statistics and model diagnostics from the modeling scripts. "run1" and "run2" are results from identical runs of the same script, except with the random starting seed changed before each model run.
+`'results'` folder is divided by phenotype and contains output summary statistics and model diagnostics from the modeling scripts. "run1" and "run2" are results from identical runs of the same script, except with the random starting seed changed before each model run.
 
 ## GBIF Citations for Occurrence Data:
 
