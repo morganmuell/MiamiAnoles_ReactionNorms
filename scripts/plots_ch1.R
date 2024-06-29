@@ -10,9 +10,8 @@ library(nadiv)
 library(reshape)
 library(ggridges)
 library(viridis)
-
-
-library(wesanderson)  #<-- contains color palette to use
+library(raster)
+library(wesanderson)
 
 rm(list=ls())
 
@@ -31,6 +30,45 @@ phenotypes <- c("WaterUptake", "Inc", "SVL", "SprintSpeed", "Endurance")
 
 colsinter <- viridis(n=5)
 cols <- palette(brewer.pal(n=7, name="Set2")) #intraspecific
+
+### Heat Map Figure ###
+### Make Heatmap Figure for Miami Paper ###
+
+###-- Import data
+preclim4 <- raster("LH_v1_2_5m/bio_4.tif")
+sflclim4 <- raster("CHELSA_cur_V1_2B_r2_5m_79-13/2_5min/bio_4.tif")
+
+#clip to: y>24.98, y<27.2, x>-82.58, x<-79.97
+lims <- extent(-86, -65, 16.7, 27.2) #this works
+presentclims <- crop(sflclim4, lims)
+pastclims <- crop(preclim4, lims)
+
+par(mfrow=c(2,1))
+par(bty="n")
+plot(presentclims, axes=F, bty="n", col=viridis(200), legend.args=list(cex=0.5))
+par(bty="n")
+plot(pastclims, axes=F, col=viridis(200))
+dev.off()
+
+#tiff(filename="presentclims.tiff", units="in", width=5, height=4, res=700)
+svg(filename="presentclims.svg", width=5, height=4)
+par(bty="n")
+plot(presentclims, axes=F, col=viridis(200))
+dev.off()
+
+par(mfrow=c(2,1))
+par(bty="n")
+plot(presentclims, axes=F, bty="n", col=viridis(200), legend.args=list(cex=0.5))
+par(bty="n")
+plot(pastclims, axes=F, col=viridis(200))
+dev.off()
+
+#tiff(filename="presentclims.tiff", units="in", width=5, height=4, res=700)
+svg(filename="pastclims.svg", width=5, height=4)
+par(bty="n")
+plot(pastclims, axes=F, col=viridis(200))
+dev.off()
+
 
 ##### Interspecific figure NEW 3/19/24 ####
 prior1 <- list(R = list(V = 1e-12, nu = -2), #<-- Non-informative improper: *marginal* posterior equal to REML estimate
