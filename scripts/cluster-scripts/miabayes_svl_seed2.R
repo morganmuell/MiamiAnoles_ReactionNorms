@@ -4,7 +4,7 @@ library(nadiv)
 library(phytools)
 
 ##--Prep Data and Priors
-load("inctrim.Rdata")
+load("svltrim.Rdata")
 load("../model2df.rda")
 
 tree <- read.tree(file="../pruned_anole_tree.treefile")
@@ -22,58 +22,47 @@ pr2B <- list(R = list(V = 1, nu = 0.002),
              G = list(G1 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = diag(1)*10)))
 
 ##-- Run Model 1
-set.seed(330)
-bincmodel1 <- MCMCglmm(logInc ~ 1 + EggMass + nTreatment + Species
+set.seed(254)
+bSVLmodel1 <- MCMCglmm(logSVL ~ 1 + EggMass + nTreatment  + Species
                       + Species*nTreatment, 
                       random = ~us(1 + nTreatment):Cage, pr = TRUE,
-                      data = incp, nitt = 275000, thin = 50, burnin = 25000,
+                      data = hatchmorph, nitt = 275000, thin = 50, burnin = 25000,
                       verbose = FALSE, prior = prior1)
 
 print("Model 1 Complete")
 
 ##--Housekeeping prior to looop
-postsize <- 100 
+postsize <-  100
 
-#output dataframes for model effect sizes
-preenveff <- matrix(NA, nrow=postsize, ncol=6) #effects for invasion time: iteration, post.mean, two slots for confidence interval, eff.size, p-value
-colnames(preenveff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-invenveff <- matrix(NA, nrow=postsize, ncol=6) #effects for invasion environment
-colnames(invenveff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-invtimeeff <- matrix(NA, nrow=postsize, ncol=6) #effects for invasion time
-colnames(invtimeeff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-inteff <- matrix(NA, nrow=postsize, ncol=6) #effects for intercept
-colnames(inteff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
+# Output mcmc object for all model names
+svlmod2.mcmc <- as.data.frame(matrix(NA, nrow=200000, ncol=12))
+colnames(svlmod2.mcmc) <- c("Intercept","PreClim","InvClim","InvTime","Phylo","Spp","units","h2phylo","s2","CVphylo","CVspp","CVresid")
+svlmod2poly.mcmc <- as.data.frame(matrix(NA, nrow=200000, ncol=9))
+colnames(svlmod2poly.mcmc) <- c("Intercept","PreClim","InvClim","InvTime","Spp","units","s2","CVspp","CVresid")
 
-phyleff <- matrix(NA, nrow=postsize, ncol=5) #effects for species random effect: iteration, postmean, two CI slots, effsamp
-colnames(phyleff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp")
-sppeff <- matrix(NA, nrow=postsize, ncol=5) #effects for species random effect: iteration, postmean, two CI slots, effsamp
-colnames(sppeff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp")
-unitseff <- matrix(NA, nrow=postsize, ncol=5) #effects for residuals: iteration, postmean, two CI slots, effsamp
-colnames(unitseff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp")
+# Create new model summary frame
+#full model
+m2sum <- as.data.frame(matrix(NA, nrow=12, ncol=5))
+rownames(m2sum) <- c("Intercept","PreClim","InvClim","InvTime","Phylo","Spp","units","h2phylo","s2","CVphylo","CVspp","CVresid")
+colnames(m2sum) <- c("post.mean", "lower.HPD.95", "upper.HPD.95","post.mode","pMCMC")
 
-polypreenveff <- matrix(NA, nrow=postsize, ncol=6) #effects for invasion time: iteration, post.mean, two slots for confidence interval, eff.size, p-value
-colnames(polypreenveff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-polyinvenveff <- matrix(NA, nrow=postsize, ncol=6) #effects for invasion environment
-colnames(polyinvenveff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-polyinvtimeeff <- matrix(NA, nrow=postsize, ncol=6) #effects for invasion time
-colnames(polyinvtimeeff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-polyinteff <- matrix(NA, nrow=postsize, ncol=6) #effects for intercept
-colnames(polyinteff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp", "pMCMC")
-polysppeff <- matrix(NA, nrow=postsize, ncol=5) #effects for species random effect: iteration, postmean, two CI slots, effsamp
-colnames(polysppeff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp")
-polyunitseff <- matrix(NA, nrow=postsize, ncol=5) #effects for residuals: iteration, postmean, two CI slots, effsamp
-colnames(polyunitseff) <- c("Iteration", "post.mean", "lower.95%.CI", "upper.95%.CI", "eff.samp")
+#reduced model
+polysum <- as.data.frame(matrix(NA, nrow=9, ncol=5))
+rownames(polysum) <- c("Intercept","PreClim","InvClim","InvTime","Spp","units","s2","CVspp","CVresid")
+colnames(polysum) <- c("post.mean", "lower.HPD.95", "upper.HPD.95","post.mode","pMCMC")
 
-#posterior modes
-postfmodes <- matrix(NA, nrow=postsize, ncol=5) #posterior modes for fixed effects: iteration, intercept, preclim, invclim, invtime
-colnames(postfmodes) <- c("Iteration", "Intercept", "Preclim", "InvClim", "InvTime")
-postsppmodes <- matrix(NA, nrow=postsize, ncol=4) #posterior modes for random effect: iteration, species, units
-colnames(postsppmodes) <- c("Iteration", "Species","AbSpec", "Units")
+#write functions for h2phylo, s2, and coefficients of variation - compute generation by generation
+CVfun <- function(var, mean) {
+  sqrt(var)/mean
+}
 
-polypostfmodes <- matrix(NA, nrow=postsize, ncol=5) #posterior modes for fixed effects: iteration, intercept, preclim, invclim, invtime
-colnames(polypostfmodes) <- c("Iteration", "Intercept", "Preclim", "InvClim", "InvTime")
-polypostsppmodes <- matrix(NA, nrow=postsize, ncol=3) #posterior modes for random effect: iteration, species, units
-colnames(polypostsppmodes) <- c("Iteration", "Species", "Units")
+s2fun <- function(spp, resid){
+  spp/(spp + resid)
+}
+
+h2fun <- function(phylo, spp, resid){
+  phylo/(phylo + spp + resid)
+}
 
 #and convergence diagnostics
 heidelfout <- matrix(NA, nrow=postsize, ncol=17) #p-values for stationarity, fixed effects: iteration, passint, pint, passpre, ppre, passinv, pinv, inthalfpass,, prepasshalf, invpasshalf
@@ -108,12 +97,6 @@ colnames(polyautorand) <- c("Iteration", "AbSpec", "units")
 dicscore <- matrix(NA, nrow=postsize, ncol=4)
 colnames(dicscore) <- c("Iteration","PhyloDIC","PolyDIC", "Diff")
 
-hpd <- matrix(NA, nrow=postsize, ncol=15)
-colnames(hpd) <- c("Iteration", "lowerInt", "upperInt", "lPreClim", "uPreClim", "lInvClim", "uInvClim","lInvTime","uInvTime",
-						"lSpecies", "uSpecies", "lAbSpec", "uAbSpec", "lUnits", "uUnits")
-polyhpd <- matrix(NA, nrow=postsize, ncol=13)
-colnames(polyhpd) <- c("Iteration", "lowerInt", "upperInt", "lPreClim", "uPreClim", "lInvClim", "uInvClim","lInvTime","uInvTime",
-						"lAbSpec", "uAbSpec", "lUnits", "uUnits")
 
 sampcor <- matrix(NA, nrow=100, ncol=1)
 
@@ -123,13 +106,16 @@ print("Output Dataframes Constructed")
 #loop management
 i <- 1
 j <- 1 #use i to index run in model 1, use j to index output files
+rlow <- 1 #use g to index net posterior positions
+rhigh <- 2000
+
 
 ##--NOW GO!
 while(j<postsize+1){
   print(j)
   
   ## Pull slopes from model iteration
-  tmpMod <- bincmodel1
+  tmpMod <- bSVLmodel1
   SolColNms <- dimnames(tmpMod$Sol)[[2L]] #pulls random effects only
   slpColInd <- which(startsWith(SolColNms, "nTreatment.Cage.")) #cuts off inconvenient names just to grab the column index number
   devs <- tmpMod$Sol[i, slpColInd] #these are deviations of cage from species x treatment average
@@ -178,75 +164,62 @@ while(j<postsize+1){
   iframe$scInvTime[is.na(iframe$scInvTime)] <- 0 #<-- trick MCMCglmm that no missing values in InvTime
   
   ## Run Model 2 with phylogeny 
-  set.seed(330)
-  bincmodel2 <- MCMCglmm(islps ~ scPreClim + scInvClim + at.level(dummyInv, "Invasive"):scInvTime,
+  set.seed(254)
+  bSVLmodel2 <- MCMCglmm(islps ~ scPreClim + scInvClim + at.level(dummyInv, "Invasive"):scInvTime,
                         random=~Species + AbSpec,
                         ginverse=list(Species=Ainv), 
                         data=iframe,
                         prior=pr2A,
                         family = rep("gaussian", 1),
-                        nitt=500000, burnin=50000, thin=250, verbose=FALSE)
+                        nitt=550000, burnin=50000, thin=250, verbose=FALSE)
   
   
   
   ## Run Model 2 without phylogeny
-  set.seed(330)
-  bincmodel2poly <- MCMCglmm(islps ~ scPreClim + scInvClim + at.level(dummyInv, "Invasive"):scInvTime,
+  set.seed(254)
+  bSVLmodel2poly <- MCMCglmm(islps ~ scPreClim + scInvClim + at.level(dummyInv, "Invasive"):scInvTime,
                             random=~AbSpec,
                             #ginverse=list(Species=Ainv), 
                             data=iframe,
                             prior=pr2B,
                             family = rep("gaussian", 1),
-                            nitt=500000, burnin=50000, thin=250, verbose=FALSE)
+                            nitt=550000, burnin=50000, thin=250, verbose=FALSE)
   
+  ## save posteriors
+  tmpbig <- as.data.frame(cbind(bSVLmodel2$Sol, bSVLmodel2$VCV))
+  tmpbigpoly <- as.data.frame(cbind(bSVLmodel2poly$Sol,bSVLmodel2poly$VCV))
+  
+  #calculate h2, s2, and coefficients of variation
+  tmpbig$h2phylo <- h2fun(tmpbig$Species, tmpbig$AbSpec, tmpbig$units)
+  tmpbig$s2 <- h2fun(tmpbig$AbSpec, tmpbig$Species, tmpbig$units)
+  tmpbigpoly$s2 <- s2fun(tmpbig$AbSpec, tmpbig$units)
+  
+  tmpbig$CVphylo <- CVfun(tmpbig$Species, tmpbig$`(Intercept)`)
+  tmpbig$CVspp <- CVfun(tmpbig$AbSpec, tmpbig$`(Intercept)`)
+  tmpbig$CVresid <- CVfun(tmpbig$units, tmpbig$`(Intercept)`)
+  tmpbigpoly$CVspp <- CVfun(tmpbig$AbSpec, tmpbig$`(Intercept)`)
+  tmpbigpoly$CVresid <- CVfun(tmpbig$units, tmpbig$`(Intercept)`)
+  
+  #add summary stats to growing net posterior distribution
+  svlmod2.mcmc[rlow:rhigh,] <- as.data.frame(tmpbig)
+  svlmod2poly.mcmc[rlow:rhigh,] <- as.data.frame(tmpbigpoly)
   
   #grab relevant output
-  tmpsum <- summary(bincmodel2)
-  tmpheifx <- heidel.diag(bincmodel2$Sol)
-  tmpheiran <- heidel.diag(bincmodel2$VCV)
-  tmpsumpoly <- summary(bincmodel2poly)
-  tmpheifxpoly <- heidel.diag(bincmodel2poly$Sol)
-  tmpheiranpoly <- heidel.diag(bincmodel2poly$VCV)
-  tmpacrand <- autocorr.diag(bincmodel2$VCV)[2,]
-  tmpacrandpoly <- autocorr.diag(bincmodel2poly$VCV)[2,]
-  tmpacfix <- autocorr.diag(bincmodel2$Sol)[2,]
-  tmpacfixpoly <- autocorr.diag(bincmodel2poly$Sol)[2,]
-  tmphpd <- rbind(HPDinterval(bincmodel2$Sol), HPDinterval(bincmodel2$VCV))
-  tmphpdpoly <- rbind(HPDinterval(bincmodel2poly$Sol), HPDinterval(bincmodel2poly$VCV))
+  tmpsum <- summary(bSVLmodel2)
+  tmpheifx <- heidel.diag(bSVLmodel2$Sol)
+  tmpheiran <- heidel.diag(bSVLmodel2$VCV)
+  tmpsumpoly <- summary(bSVLmodel2poly)
+  tmpheifxpoly <- heidel.diag(bSVLmodel2poly$Sol)
+  tmpheiranpoly <- heidel.diag(bSVLmodel2poly$VCV)
+  tmpacrand <- autocorr.diag(bSVLmodel2$VCV)[2,]
+  tmpacrandpoly <- autocorr.diag(bSVLmodel2poly$VCV)[2,]
+  tmpacfix <- autocorr.diag(bSVLmodel2$Sol)[2,]
+  tmpacfixpoly <- autocorr.diag(bSVLmodel2poly$Sol)[2,]
+  tmphpd <- rbind(HPDinterval(bSVLmodel2$Sol), HPDinterval(bSVLmodel2$VCV))
+  tmphpdpoly <- rbind(HPDinterval(bSVLmodel2poly$Sol), HPDinterval(bSVLmodel2poly$VCV))
   
-  ##--pull effects and convergence diagnostics and store 
-  hpd[j,1] <- i
-  hpd[j,2] <- tmphpd[1,"lower"]
-  hpd[j,3] <- tmphpd[1,"upper"]
-  hpd[j,4] <- tmphpd[2,"lower"]
-  hpd[j,5] <- tmphpd[2,"upper"]
-  hpd[j,6] <- tmphpd[3,"lower"]
-  hpd[j,7] <- tmphpd[3,"upper"]
-  hpd[j,8] <- tmphpd[4,"lower"]
-  hpd[j,9] <- tmphpd[4,"upper"]
-  hpd[j,10] <- tmphpd["Species","lower"]
-  hpd[j,11] <- tmphpd["Species", "upper"]
-  hpd[j,12] <- tmphpd["AbSpec","lower"]
-  hpd[j,13] <- tmphpd["AbSpec","upper"]
-  hpd[j,14] <- tmphpd["units","lower"]
-  hpd[j,15] <- tmphpd["units","upper"]
-  
-  polyhpd[j,1] <- i
-  polyhpd[j,2] <- tmphpdpoly[1,"lower"]
-  polyhpd[j,3] <- tmphpdpoly[1,"upper"]
-  polyhpd[j,4] <- tmphpdpoly[2,"lower"]
-  polyhpd[j,5] <- tmphpdpoly[2,"upper"]
-  polyhpd[j,6] <- tmphpdpoly[3,"lower"]
-  polyhpd[j,7] <- tmphpdpoly[3,"upper"]
-  polyhpd[j,8] <- tmphpdpoly[4,"lower"]
-  polyhpd[j,9] <- tmphpdpoly[4,"upper"]
-  polyhpd[j,10] <- tmphpdpoly[5,"lower"]
-  polyhpd[j,11] <- tmphpdpoly[5,"upper"]
-  polyhpd[j,12] <- tmphpdpoly[6,"lower"]
-  polyhpd[j,13] <- tmphpdpoly[6,"upper"]
-
   #random effect sampling correlation for full model
-  sampcor[j,1] <- cor(bincmodel2$VCV[,1], bincmodel2$VCV[,2])
+  sampcor[j,1] <- cor(bSVLmodel2$VCV[,1], bSVLmodel2$VCV[,2])
   
   #DIC scores
   dicscore[j,1] <- i
@@ -264,46 +237,6 @@ while(j<postsize+1){
   polyautofix[j,c(2:5)] <- tmpacfixpoly[c(1:4)]
   polyautorand[j,1] <- i
   polyautorand[j,c(2:3)] <- tmpacrandpoly[c(1:2)]
-  
-  #effects
-  phyleff[j,1] <- i
-  phyleff[j,c(2:5)] <- tmpsum$Gcovariances[1,]
-  sppeff[j,1] <- i
-  sppeff[j,c(2:5)] <- tmpsum$Gcovariances[2,]
-  unitseff[j,1] <- i
-  unitseff[j,c(2:5)] <- tmpsum$Rcovariances
-  inteff[j,1] <- i
-  inteff[j,c(2:6)] <- tmpsum$solutions[1,]
-  preenveff[j,1] <- i
-  preenveff[j,c(2:6)] <- tmpsum$solutions[2,]
-  invenveff[j,1] <- i
-  invenveff[j,c(2:6)] <- tmpsum$solutions[3,]
-  invtimeeff[j,1] <- i
-  invtimeeff[j,c(2:6)] <- tmpsum$solutions[4,]
-  
-  polysppeff[j,1] <- i
-  polysppeff[j,c(2:5)] <- tmpsumpoly$Gcovariances
-  polyunitseff[j,1] <- i
-  polyunitseff[j,c(2:5)] <- tmpsumpoly$Rcovariances
-  polyinteff[j,1] <- i
-  polyinteff[j,c(2:6)] <- tmpsumpoly$solutions[1,]
-  polypreenveff[j,1] <- i
-  polypreenveff[j,c(2:6)] <- tmpsumpoly$solutions[2,]
-  polyinvenveff[j,1] <- i
-  polyinvenveff[j,c(2:6)] <- tmpsumpoly$solutions[3,]
-  polyinvtimeeff[j,1] <- i
-  polyinvtimeeff[j,c(2:6)] <- tmpsumpoly$solutions[4,]
-  
-  #posterior modes
-  postfmodes[j,1] <- i
-  postfmodes[j,c(2:5)] <- posterior.mode(bincmodel2$Sol)
-  postsppmodes[j,1] <- i
-  postsppmodes[j,c(2:4)] <- posterior.mode(bincmodel2$VCV)
-  
-  polypostfmodes[j,1] <- i
-  polypostfmodes[j,c(2:5)] <- posterior.mode(bincmodel2poly$Sol)
-  polypostsppmodes[j,1] <- i
-  polypostsppmodes[j,c(2:3)] <- posterior.mode(bincmodel2poly$VCV)
   
   #convergence diagnostics
   ##fixed effects
@@ -371,56 +304,83 @@ while(j<postsize+1){
   #last but not least
   i<- i+50
   j<- j+1
+  rlow <- rlow + 2000
+  rhigh <- rhigh + 2000
   
+}
+
+##-- Calculate Summary Statistics
+
+write.csv(svlmod2.mcmc, file="results/run1/svl_fullmod_mcmc_out.csv")
+write.csv(svlmod2poly.mcmc, file="results/run1/svl_reducemod_mcmc_out.csv")
+
+#perform mean calculation while still data frames
+for(n in rownames(m2sum)){
+  m2sum[n,"post.mean"] <- mean(svlmod2.mcmc[,n])
+}
+
+for(n in rownames(polysum)){
+  polysum[n,"post.mean"] <- mean(svlmod2poly.mcmc[,n])
+}
+
+#convert to mcmc objects to calculate HPD intervals and posterior modes
+svlmod2.mcmc <- as.mcmc(svlmod2.mcmc)
+svlmod2poly.mcmc <- as.mcmc(svlmod2poly.mcmc)
+
+#calculate HPD and modes
+for(n in rownames(m2sum)){
+  m2sum[n,"lower.HPD.95"] <- HPDinterval(svlmod2.mcmc[,n])[1]
+  m2sum[n,"upper.HPD.95"] <- HPDinterval(svlmod2.mcmc[,n])[2]
+  m2sum[n,"post.mode"] <- posterior.mode(svlmod2.mcmc[,n])
+}
+
+for(n in rownames(polysum)){
+  polysum[n,"lower.HPD.95"] <- HPDinterval(svlmod2poly.mcmc[,n])[1]
+  polysum[n,"upper.HPD.95"] <- HPDinterval(svlmod2poly.mcmc[,n])[2]
+  polysum[n,"post.mode"] <- posterior.mode(svlmod2poly.mcmc[,n])
+}
+
+#calculate pMCMC
+for (n in rownames(m2sum)){
+  m2sum[n,"pMCMC"] <- 2 * pmax(0.5/dim(svlmod2.mcmc)[1], pmin(colSums(svlmod2.mcmc[,n, drop = FALSE] > 0)/dim(svlmod2.mcmc)[1],
+ 1 - colSums(svlmod2.mcmc[, n, drop = FALSE] > 0)/dim(svlmod2.mcmc)[1]))
+}
+
+for (n in rownames(polysum)){
+  polysum[n,"pMCMC"] <- 2 * pmax(0.5/dim(svlmod2poly.mcmc)[1], pmin(colSums(svlmod2poly.mcmc[,n, drop = FALSE] > 0)/dim(svlmod2poly.mcmc)[1],
+ 1 - colSums(svlmod2poly.mcmc[, n, drop = FALSE] > 0)/dim(svlmod2poly.mcmc)[1]))
 }
 
 ##--export results
 #Model 1 Output
-incmodel1out <- summary(bincmodel1)
-sink("results/run1/inc_summ_model1.txt")
-print(incmodel1out)
+svlmodel1out <- summary(bSVLmodel1)
+sink("results/run2/svl_summ_model1.txt")
+print(svlmodel1out)
 sink()
-incmode1 <- posterior.mode(bincmodel1$VCV)
-write.csv(incmode1, file="results/run1/inc_mode_1.csv")
-incautocor1 <- autocorr.diag(bincmodel1$VCV)
-write.csv(incautocor1, file="results/run1/inc_autocorr_VCV1.csv")
-incheidelrout1 <- heidel.diag(bincmodel1$VCV)
-write.csv(incheidelrout1, file="results/run1/inc_heidelrout_1.csv")
-incheidelfout1 <- heidel.diag(bincmodel1$Sol)
-write.csv(incheidelfout1, file="results/run1/inc_heidelfout_1.csv")
-write.csv(rbind(HPDinterval(bincmodel1$Sol), HPDinterval(bincmodel1$VCV)), file="results/run1/inc_hpds_model1")
+svlmode1 <- posterior.mode(bSVLmodel1$VCV)
+write.csv(svlmode1, file="results/run2/svl_mode_1.csv")
+svlautocor1 <- autocorr.diag(bSVLmodel1$VCV)
+write.csv(svlautocor1, file="results/run2/svl_autocorr_VCV1.csv")
+svlheidelrout1 <- heidel.diag(bSVLmodel1$VCV)
+write.csv(svlheidelrout1, file="results/run2/svl_heidelrout_1.csv")
+svlheidelfout1 <- heidel.diag(bSVLmodel1$Sol)
+write.csv(svlheidelfout1, file="results/run2/svl_heidelfout_1.csv")
+write.csv(rbind(HPDinterval(bSVLmodel1$Sol), HPDinterval(bSVLmodel1$VCV)), file="results/run2/svl_hpds_model1")
 
 #Model 2 Output
-#write.csv(dicscore, file="results/run1inc_dics.csv")
+write.csv(m2sum, file="results/run2/fullmod_summary.csv")
+write.csv(polysum, file="results/run2/reducemod_summary.csv")
 
-#write.csv(phyleff, file="results/run1/inc_phyleff_longrun.csv")
-#write.csv(sppeff, file="results/run1/inc_sppeff_longrun.csv")
-#write.csv(unitseff, file="results/run1/inc_unitseff_longrun.csv")
-#write.csv(inteff, file="results/run1/inc_inteff_longrun.csv")
-#write.csv(preenveff, file="results/run1/inc_preenveff_longrun.csv")
-#write.csv(invenveff, file="results/run1/inc_invenveff_longrun.csv")
-#write.csv(invtimeeff, file="results/run1/inc_invtimeeff_longrun.csv")
-#write.csv(postfmodes, file="results/run1/inc_postfmodes_longrun.csv")
-#write.csv(postsppmodes, file="results/run1/inc_postsppmodes_longrun.csv")
-#write.csv(heidelfout, file="results/run1/inc_heidelfout_longrun.csv")
-#write.csv(heidelrout, file="results/run1/inc_heidelrout_longrun.csv")
-#write.csv(hpd, file="results/run1/inc_hpds_longrun.csv")
-#write.csv(autofix, file="results/run1/inc_autocorr_fix_longrun.csv")
-#write.csv(autorand, file="results/run1/inc_autocorr_rand_longrun.csv")
+write.csv(dicscore, file="results/run2/svl_dics.csv")
 
+write.csv(heidelfout, file="results/run2/svl_heidelfout_longrun.csv")
+write.csv(heidelrout, file="results/run2/svl_heidelrout_longrun.csv")
+write.csv(autofix, file="results/run2/svl_autocorr_fix_longrun.csv")
+write.csv(autorand, file="results/run2/svl_autocorr_rand_longrun.csv")
 
-#write.csv(polysppeff, file="results/run1/poly_inc_sppeff_longrun.csv")
-#write.csv(polyunitseff, file="results/run1/poly_inc_unitseff_longrun.csv")
-#write.csv(polyinteff, file="results/run1/poly_inc_inteff_longrun.csv")
-#write.csv(polypreenveff, file="results/run1/poly_inc_preenveff_longrun.csv")
-#write.csv(polyinvenveff, file="results/run1/poly_inc_invenveff_longrun.csv")
-#write.csv(polyinvtimeeff, file="results/run1/poly_inc_invtimeeff_longrun.csv")
-#write.csv(polypostfmodes, file="results/run1/poly_inc_postfmodes_longrun.csv")
-#write.csv(polypostsppmodes, file="results/run1/poly_inc_postsppmodes_longrun.csv")
-#write.csv(polyheidelfout, file="results/run1/poly_inc_heidelfout_longrun.csv")
-#write.csv(polyheidelrout, file="results/run1/poly_inc_heidelrout_longrun.csv")
-#write.csv(polyhpd, file="results/run1/poly_inc_hpds_longrun.csv")
-#write.csv(polyautofix, file="results/run1/poly_inc_autocorr_fix_longrun.csv")
-#write.csv(polyautorand, file="results/run1/poly_inc_autocorr_rand_longrun.csv")
+write.csv(polyheidelfout, file="results/run2/poly_svl_heidelfout_longrun.csv")
+write.csv(polyheidelrout, file="results/run2/poly_svl_heidelrout_longrun.csv")
+write.csv(polyautofix, file="results/run2/poly_autocorr_longrun.csv")
+write.csv(polyautorand, file="results/run2/poly_autocorr_fix_longrun.csv")
 
-write.csv(sampcor, file="results/run1/rf_sampling_correlations_longrun.csv")
+write.csv(sampcor, file="results/run2/rf_sampling_correlations_longrun.csv")
