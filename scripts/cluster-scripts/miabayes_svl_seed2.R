@@ -22,7 +22,7 @@ pr2B <- list(R = list(V = 1, nu = 0.002),
              G = list(G1 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = diag(1)*10)))
 
 ##-- Run Model 1
-set.seed(330)
+set.seed(254)
 bSVLmodel1 <- MCMCglmm(logSVL ~ 1 + EggMass + nTreatment  + Species
                       + Species*nTreatment, 
                       random = ~us(1 + nTreatment):Cage, pr = TRUE,
@@ -170,7 +170,7 @@ while(j<postsize+1){
   iframe$scInvTime[is.na(iframe$scInvTime)] <- 0 #<-- trick MCMCglmm that no missing values in InvTime
   
   ## Run Model 2 with phylogeny 
-  set.seed(330)
+  set.seed(254)
   bSVLmodel2 <- MCMCglmm(islps ~ scPreClim + scInvClim + at.level(dummyInv, "Invasive"):scInvTime,
                         random=~Species + AbSpec,
                         ginverse=list(Species=Ainv), 
@@ -182,7 +182,7 @@ while(j<postsize+1){
   
   
   ## Run Model 2 without phylogeny
-  set.seed(330)
+  set.seed(254)
   bSVLmodel2poly <- MCMCglmm(islps ~ scPreClim + scInvClim + at.level(dummyInv, "Invasive"):scInvTime,
                             random=~AbSpec,
                             #ginverse=list(Species=Ainv), 
@@ -360,33 +360,33 @@ for (n in rownames(polysum)){
 ##--export results
 #Model 1 Output
 svlmodel1out <- summary(bSVLmodel1)
-sink("results/run1/svl_summ_model1.txt")
+sink("results/run2/svl_summ_model1.txt")
 print(svlmodel1out)
 sink()
 svlmode1 <- posterior.mode(bSVLmodel1$VCV)
-write.csv(svlmode1, file="results/run1/svl_mode_1.csv")
+write.csv(svlmode1, file="results/run2/svl_mode_1.csv")
 svlautocor1 <- autocorr.diag(bSVLmodel1$VCV)
-write.csv(svlautocor1, file="results/run1/svl_autocorr_VCV1.csv")
+write.csv(svlautocor1, file="results/run2/svl_autocorr_VCV1.csv")
 svlheidelrout1 <- heidel.diag(bSVLmodel1$VCV)
-write.csv(svlheidelrout1, file="results/run1/svl_heidelrout_1.csv")
+write.csv(svlheidelrout1, file="results/run2/svl_heidelrout_1.csv")
 svlheidelfout1 <- heidel.diag(bSVLmodel1$Sol)
-write.csv(svlheidelfout1, file="results/run1/svl_heidelfout_1.csv")
-write.csv(rbind(HPDinterval(bSVLmodel1$Sol), HPDinterval(bSVLmodel1$VCV)), file="results/run1/svl_hpds_model1")
+write.csv(svlheidelfout1, file="results/run2/svl_heidelfout_1.csv")
+write.csv(rbind(HPDinterval(bSVLmodel1$Sol), HPDinterval(bSVLmodel1$VCV)), file="results/run2/svl_hpds_model1")
 
 #Model 2 Output
-write.csv(m2sum, file="results/run1/fullmod_summary.csv")
-write.csv(polysum, file="results/run1/reducemod_summary.csv")
+write.csv(m2sum, file="results/run2/fullmod_summary.csv")
+write.csv(polysum, file="results/run2/reducemod_summary.csv")
 
-write.csv(dicscore, file="results/run1/svl_dics.csv")
+write.csv(dicscore, file="results/run2/svl_dics.csv")
 
-write.csv(heidelfout, file="results/run1/svl_heidelfout_longrun.csv")
-write.csv(heidelrout, file="results/run1/svl_heidelrout_longrun.csv")
-write.csv(autofix, file="results/run1/svl_autocorr_fix_longrun.csv")
-write.csv(autorand, file="results/run1/svl_autocorr_rand_longrun.csv")
+write.csv(heidelfout, file="results/run2/svl_heidelfout_longrun.csv")
+write.csv(heidelrout, file="results/run2/svl_heidelrout_longrun.csv")
+write.csv(autofix, file="results/run2/svl_autocorr_fix_longrun.csv")
+write.csv(autorand, file="results/run2/svl_autocorr_rand_longrun.csv")
 
-write.csv(polyheidelfout, file="results/run1/poly_svl_heidelfout_longrun.csv")
-write.csv(polyheidelrout, file="results/run1/poly_svl_heidelrout_longrun.csv")
-write.csv(polyautofix, file="results/run1/poly_autocorr_longrun.csv")
-write.csv(polyautorand, file="results/run1/poly_autocorr_fix_longrun.csv")
+write.csv(polyheidelfout, file="results/run2/poly_svl_heidelfout_longrun.csv")
+write.csv(polyheidelrout, file="results/run2/poly_svl_heidelrout_longrun.csv")
+write.csv(polyautofix, file="results/run2/poly_autocorr_longrun.csv")
+write.csv(polyautorand, file="results/run2/poly_autocorr_fix_longrun.csv")
 
-write.csv(sampcor, file="results/run1/rf_sampling_correlations_longrun.csv")
+write.csv(sampcor, file="results/run2/rf_sampling_correlations_longrun.csv")
