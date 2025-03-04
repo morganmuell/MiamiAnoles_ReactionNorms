@@ -23,7 +23,7 @@ pr2B <- list(R = list(V = 1, nu = 0.002),
 
 ##-- Run Model 1
 set.seed(330)
-bendmodel1 <- MCMCglmm(logEnd ~ 1 + Species + nTreatment + SVL + Velocity_cm.s + AgeEndurance
+bendmodel1 <- MCMCglmm(logEnd ~ 1 + nTreatment + Species + SVL + Velocity_cm.s + AgeEndurance
                       + Species*nTreatment, 
                       random = ~us(1 + nTreatment):Cage, pr = TRUE,
                       data = endur, nitt = 275000, thin = 50, burnin = 25000,

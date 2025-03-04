@@ -23,7 +23,7 @@ pr2B <- list(R = list(V = 1, nu = 0.002),
 
 ##-- Run Model 1
 set.seed(330)
-bssmodel1 <- MCMCglmm(logSS ~ 1 + Species + SVL + Stops + Fails + SprintTemp + AgeSprint + nTreatment
+bssmodel1 <- MCMCglmm(logSS ~ 1 + nTreatment + Species + SVL + Stops + Fails + SprintTemp + AgeSprint
                       + Species*nTreatment, 
                       random = ~us(1 + nTreatment):Cage, pr = TRUE,
                       data = ss, nitt = 275000, thin = 50, burnin = 25000,
