@@ -317,8 +317,8 @@ while(j<postsize+1){
 
 ##-- Calculate Summary Statistics
 
-write.csv(svlmod2.mcmc, file="results/run1/svl_fullmod_mcmc_out.csv")
-write.csv(svlmod2poly.mcmc, file="results/run1/svl_reducemod_mcmc_out.csv")
+write.csv(svlmod2.mcmc, file="results/run2/svl_fullmod_mcmc_out.csv")
+write.csv(svlmod2poly.mcmc, file="results/run2/svl_reducemod_mcmc_out.csv")
 
 #perform mean calculation while still data frames
 for(n in rownames(m2sum)){
