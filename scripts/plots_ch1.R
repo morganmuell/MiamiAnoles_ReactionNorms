@@ -757,9 +757,10 @@ clPurp <- clP16[c(1:6, 15:16)]
 
 
 #par(mar = c(5.5, 6, 5.5, 2.3))
-par(mar = c(3.5, 3, 1, 3))
+
 png(filename="slope_postvars_model1.png", height=2, width=7, units="in", res=300)
-par(mar = c(5.5, 6, 5.5, 2.3), mfrow=c(1,5))
+#par(mar = c(3, 2, 2, 2), mfrow=c(1,5))
+par(mfrow=c(1,5))
 ## Water Uptake
 postPlot(bwumodel1$VCV[,4], plotHist = TRUE,
          xlim = c(0, 0.085), ylim = c(0,55),
@@ -767,7 +768,7 @@ postPlot(bwumodel1$VCV[,4], plotHist = TRUE,
          denscol = clPurp[4])
 # Add prior
 abline(h = 0.5, col = "grey50", lwd = 4)
-mtext(text = expression(bolditalic("Water Uptake")), side=3, cex=1.3,
+mtext(text = expression(bolditalic("Water Uptake")), side=3, cex=0.7,
       adj = 0
       #line = lettLine, 
       )
@@ -779,7 +780,7 @@ postPlot(bincmodel1$VCV[,4], plotHist = TRUE,
          denscol = clPurp[4])
 # Add prior
 abline(h = 0.5, col = "grey50", lwd = 4)
-mtext(text = expression(bolditalic("Incubation Period")), side=3, cex=1.3,
+mtext(text = expression(bolditalic("Incubation Period")), side=3, cex=0.7,
       adj = 0
       #line = lettLine, 
 )
@@ -791,7 +792,7 @@ postPlot(bSVLmodel1$VCV[,4], plotHist = TRUE,
          denscol = clPurp[4])
 # Add prior
 abline(h = 0.5, col = "grey50", lwd = 4)
-mtext(text = expression(bolditalic("Snout-vent Length")), side=3, cex=1.3,
+mtext(text = expression(bolditalic("Snout-vent Length")), side=3, cex=0.7,
       adj = 0
       #line = lettLine, 
 )
@@ -803,7 +804,7 @@ postPlot(bssmodel1$VCV[,4], plotHist = TRUE,
          denscol = clPurp[4])
 # Add prior
 abline(h = 0.5, col = "grey50", lwd = 4)
-mtext(text = expression(bolditalic("Sprint Speed")), side=3, cex=1.3,
+mtext(text = expression(bolditalic("Sprint Speed")), side=3, cex=0.7,
       adj = 0
       #line = lettLine, 
 )
@@ -815,9 +816,13 @@ postPlot(bendmodel1$VCV[,4], plotHist = TRUE,
          denscol = clPurp[4])
 # Add prior
 abline(h = 0.5, col = "grey50", lwd = 4)
-mtext(text = expression(bolditalic("Endurance")), side=3, cex=1.3,
+mtext(text = expression(bolditalic("Endurance")), side=3, cex=0.7,
       adj = 0
       #line = lettLine, 
 )
+
 dev.off()
+
+
+
 

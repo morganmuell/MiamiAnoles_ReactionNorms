@@ -119,38 +119,45 @@ while(j<postsize+1){
   slopeframe <- data.frame(cageNumbs, devs, islps)
 
   #convert cage deviations to deviations from model average -- CageDev + SpecAverage + RefSpp
-  cg <- 1 #index row number for loop
-  while(cg < length(devs)+1){
-    CID <- slopeframe[cg,"cageNumbs"] #make variable for cage ID
-    if(CID<11){ #cristatellus
-      slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,15]
-    } else { #if the species is a green anole (range 11-20)
-      if(CID>10 | CID<21){ #sagrei
-        slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,19]
+	cg <- 1 #index row number for loop
+	while(cg < length(devs)+1){
+  	CID <- as.integer(slopeframe[cg,"cageNumbs"]) #make variable for cage ID
+  	if(CID<11){ #cristatellus
+    slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,"nTreatment:Speciescristatellus"]
+    #print(paste0(CID,": cristatellus picked"))
+  } else { #if the species is a green anole (range 11-20)
+    if(CID>10 & CID<21){ #sagrei
+      slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,"nTreatment:Speciessagrei"]
+      #print(paste0(CID,": sagrei picked"))
+    } else {
+      if(CID>20 & CID<31){ #carolinensis
+        slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"]
+        #print(paste0(CID,": carolinensis picked"))
       } else {
-        if(CID>20 | CID<31){ #carolinensis
-          slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"]
+        if(CID>30 & CID<43){ #chlorocyanus
+          slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,"nTreatment:Specieschlorocyanus"]
+          #print(paste0(CID,": chlorocyanus picked"))
         } else {
-          if(CID>30 | CID<43){ #chlorocyanus
-            slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,14]
+          if(CID>42 & CID<53){ #distichus
+            slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,"nTreatment:Speciesdistichus"]
+            #print(paste0(CID,": distichus picked"))
           } else {
-            if(CID>42 | CID<53){ #distichus
-              slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,17]
+            if(CID>56 & CID<68){ #cybotes
+              slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,"nTreatment:Speciescybotes"]
+              #print(paste0(CID,": cybotes picked"))
             } else {
-              if(CID>56| CID<68){ #cybotes
-                slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,16]
-              } else {
-                if(CID>67| CID<78){ #equestris
-                  slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,18]
-                } else {slopeframe[cg,"islps"] <- "ERROR: CAGE NUMBER NOT FOUND IN DATASET"}
-              }
+              if(CID>67 & CID<78){ #equestris
+                slopeframe[cg,"islps"] <- slopeframe[cg,"devs"] + tmpMod$Sol[i,"nTreatment"] + tmpMod$Sol[i,"nTreatment:Speciesequestris"]
+                #print(paste0(CID,": equestris picked"))
+              } else {slopeframe[cg,"islps"] <- "ERROR: CAGE NUMBER NOT FOUND IN DATASET"}
             }
           }
         }
       }
     }
-    cg <- cg + 1
   }
+  cg <- cg + 1
+	}
 
   ordslp <- slopeframe[order(as.integer(slopeframe$cageNumbs)),]
   iframe <- model2df[(model2df$Cage %in% cageNumbs),]
