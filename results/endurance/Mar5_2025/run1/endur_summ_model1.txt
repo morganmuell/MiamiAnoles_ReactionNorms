@@ -1,0 +1,60 @@
+
+ Iterations = 25001:274951
+ Thinning interval  = 50
+ Sample size  = 5000 
+
+ DIC: 344.2166 
+
+ G-structure:  ~us(1 + nTreatment):Cage
+
+                             post.mean   l-95% CI u-95% CI eff.samp
+(Intercept):(Intercept).Cage 0.0036339  1.795e-09 0.011145     5000
+nTreatment:(Intercept).Cage  0.0008304 -5.061e-03 0.007634     5000
+(Intercept):nTreatment.Cage  0.0008304 -5.061e-03 0.007634     5000
+nTreatment:nTreatment.Cage   0.0141643  3.265e-09 0.045822     5331
+
+ R-structure:  ~units
+
+      post.mean l-95% CI u-95% CI eff.samp
+units    0.1305   0.1113   0.1514     5235
+
+ Location effects: logEnd ~ 1 + nTreatment + Species + SVL + Velocity_cm.s + AgeEndurance + Species * nTreatment 
+
+                                post.mean   l-95% CI   u-95% CI eff.samp  pMCMC
+(Intercept)                     3.9734910  3.3711494  4.6367609     5000 <2e-04
+nTreatment                      0.0754767 -0.1420564  0.2766299     5000 0.4880
+Specieschlorocyanus            -0.2066327 -0.3733038 -0.0518683     5000 0.0128
+Speciescristatellus            -0.0308068 -0.2137615  0.1336878     5000 0.7196
+Speciescybotes                 -0.1590042 -0.3034907 -0.0082023     5000 0.0392
+Speciesdistichus               -0.0760670 -0.2303468  0.0877511     5000 0.3476
+Speciesequestris               -1.7632715 -2.3692281 -1.1241025     5000 <2e-04
+Speciessagrei                   0.0059682 -0.1739951  0.1826474     5000 0.9372
+SVL                             0.0561664  0.0241443  0.0862615     5000 <2e-04
+Velocity_cm.s                   4.2024964  2.9350724  5.3832048     5000 <2e-04
+AgeEndurance                   -0.0008335 -0.0208885  0.0193435     5000 0.9376
+nTreatment:Specieschlorocyanus  0.1678814 -0.1342386  0.4825880     5000 0.2852
+nTreatment:Speciescristatellus -0.0422765 -0.3300496  0.2541528     5000 0.7792
+nTreatment:Speciescybotes      -0.3167402 -0.6060176 -0.0114115     4691 0.0420
+nTreatment:Speciesdistichus    -0.0947853 -0.3803030  0.2078404     5000 0.5280
+nTreatment:Speciesequestris    -0.0088884 -0.2992709  0.3219777     5393 0.9500
+nTreatment:Speciessagrei        0.1028768 -0.1652069  0.3890113     5000 0.4856
+                                  
+(Intercept)                    ***
+nTreatment                        
+Specieschlorocyanus            *  
+Speciescristatellus               
+Speciescybotes                 *  
+Speciesdistichus                  
+Speciesequestris               ***
+Speciessagrei                     
+SVL                            ***
+Velocity_cm.s                  ***
+AgeEndurance                      
+nTreatment:Specieschlorocyanus    
+nTreatment:Speciescristatellus    
+nTreatment:Speciescybotes      *  
+nTreatment:Speciesdistichus       
+nTreatment:Speciesequestris       
+nTreatment:Speciessagrei          
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
