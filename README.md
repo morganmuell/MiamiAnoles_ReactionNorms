@@ -1,4 +1,4 @@
-# MiamiAnoles_ReactionNorms
+# Comparison of thermal developmental plasticity among seven recently sympatric *Anolis* species: insights into the evolution of reaction norms
 Code for analyzing reaction norm evolution in a community of invasive *Anolis* lizards in Miami, FL, USA.
 
 Citation:
