@@ -1,4 +1,4 @@
-# Comparison of thermal developmental plasticity among seven recently sympatric *Anolis* species: insights into the evolution of reaction norms
+# Analyzing reaction norm evolution across seven species of *Anolis* lizards
 Code for analyzing reaction norm evolution in a community of invasive *Anolis* lizards in Miami, FL, USA.
 
 Citation:
