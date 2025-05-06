@@ -2,7 +2,7 @@
 Code for analyzing reaction norm evolution in a community of invasive *Anolis* lizards in Miami, FL, USA.
 
 Citation:
-Muell MR, Hall JM, Smith KV, Oaks JR, Wolak ME, and DA Warner. In press. Intraspecific variation indicates neutral evolution in thermal developmental plasticity across seven species of Anolis lizards. Evolution.
+Muell MR, Hall JM, Smith KV, Oaks JR, Wolak ME, and DA Warner. In press. Comparison of thermal developmental plasticity among seven recently sympatric Anolis species: insights into the evolution of reaction norms. Evolution.
 
 ## Guide to Repository:
 
