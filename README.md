@@ -13,7 +13,7 @@ Muell MR, Hall JM, Smith KV, Oaks JR, Wolak ME, and DA Warner. In press. Compari
   - Modeling scripts, optimized for the Easley HPC cluster at Auburn University. Within each script, Bayesian mixed models extract reaction norms and test for the influence of common ancestry versus climate on reaction norm evolution among species. 
   - Two plotting scripts ("plots_ch1.R" and "plot_utils.R"). The main plotting script contains code used to generate Figs 2 and 3, and the heat map from Fig 1. plot_utils.R contains support functions for plots in main script.
 
-`'results'` folder is divided by phenotype and contains output summary statistics and model diagnostics from the modeling scripts. "run1" and "run2" are results from identical runs of the same script, except with the random starting seed changed before each model run.
+`'results'` folder is divided by trait and contains output summary statistics and model diagnostics from the modeling scripts. "run1" and "run2" are results from identical runs of the same script, except with the random starting seed changed before each model run.
 
 ## GBIF Citations for Occurrence Data:
 
